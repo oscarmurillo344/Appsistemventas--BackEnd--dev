@@ -1,3 +1,3 @@
-# App de servcio de ventas
+# App de servicio de ventas
 jwt security api REST 
 
