@@ -1,4 +1,3 @@
-# tutorial_jwt_BACK
+# App de servicio de ventas
 jwt security api REST 
 
-basic CRUD with JWT authentication based on roles
