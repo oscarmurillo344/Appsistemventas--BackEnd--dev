@@ -52,25 +52,25 @@ public class AuthController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listaUsu")
-    public ResponseEntity<List<Usuario>> list(){
+    public ResponseEntity<List<Usuario>> list() {
         List<Usuario> list = usuarioService.listar();
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
     @PostMapping("/nuevo")
-    public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
+    public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
             return new ResponseEntity(new Mensaje("campos mal puestos o email inválido"), HttpStatus.BAD_REQUEST);
-        if(usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario()))
+        if (usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario()))
             return new ResponseEntity(new Mensaje("ese nombre ya existe"), HttpStatus.BAD_REQUEST);
-        if(usuarioService.existsByEmail(nuevoUsuario.getEmail()))
+        if (usuarioService.existsByEmail(nuevoUsuario.getEmail()))
             return new ResponseEntity(new Mensaje("ese email ya existe"), HttpStatus.BAD_REQUEST);
         Usuario usuario =
                 new Usuario(nuevoUsuario.getNombre(), nuevoUsuario.getNombreUsuario(), nuevoUsuario.getEmail(),
                         passwordEncoder.encode(nuevoUsuario.getPassword()));
         Set<Rol> roles = new HashSet<>();
         roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
-        if(nuevoUsuario.getRoles().contains("admin"))
+        if (nuevoUsuario.getRoles().contains("admin"))
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
         usuario.setRoles(roles);
         usuarioService.save(usuario);
@@ -78,22 +78,22 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
+    public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
             return new ResponseEntity(new Mensaje("campos mal puestos"), HttpStatus.BAD_REQUEST);
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUsuario.getNombreUsuario(), loginUsuario.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateToken(authentication);
-        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
         return new ResponseEntity(jwtDto, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteuser/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id")int id){
-        if(!usuarioService.existeUser(id))
+    public ResponseEntity<?> delete(@PathVariable("id") int id) {
+        if (!usuarioService.existeUser(id))
             return new ResponseEntity(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
         usuarioService.eliminarUser(id);
         return new ResponseEntity(new Mensaje("Usuario eliminado"), HttpStatus.OK);
@@ -101,13 +101,12 @@ public class AuthController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleterol/{codigo}")
-    public ResponseEntity<?> deleteRol(@PathVariable("codigo")int codigo){
-        if(!rolService.existeRol(codigo))
+    public ResponseEntity<?> deleteRol(@PathVariable("codigo") int codigo) {
+        if (!rolService.existeRol(codigo))
             return new ResponseEntity(new Mensaje("no existe rol"), HttpStatus.NOT_FOUND);
         rolService.eliminarRol(codigo);
         return new ResponseEntity(new Mensaje("Rol eliminado"), HttpStatus.OK);
     }
-}
 
     @PostMapping("/createrol")
     public ResponseEntity<?> CrearRol(){
