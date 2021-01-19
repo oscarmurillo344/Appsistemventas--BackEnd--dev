@@ -108,4 +108,13 @@ public class AuthController {
         rolService.eliminarRol(codigo);
         return new ResponseEntity(new Mensaje("Rol eliminado"), HttpStatus.OK);
     }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/createrol")
+    public ResponseEntity<?> CrearRol(){
+     Rol rolAdmin = new Rol(RolNombre.ROLE_ADMIN);
+     Rol rolUser = new Rol(RolNombre.ROLE_USER);
+     rolService.saveRol(rolAdmin);
+     rolService.saveRol(rolUser);
+     return new ResponseEntity(new Mensaje("Roles creados"),HttpStatus.OK);
+    }
 }
