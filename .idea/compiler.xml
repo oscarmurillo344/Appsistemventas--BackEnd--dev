@@ -10,11 +10,13 @@
         <module name="AsaderoServices_prod" />
         <module name="AsaderoServices_developer" />
         <module name="AsaderoService_dev_nube" />
+        <module name="Appsistemventas--BackEnd--dev" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Appsistemventas--BackEnd--dev" options="-parameters" />
       <module name="AsaderoService_dev_nube" options="-parameters" />
       <module name="AsaderoServices_developer" options="-parameters" />
       <module name="AsaderoServices_prod" options="-parameters" />

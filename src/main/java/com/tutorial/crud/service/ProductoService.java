@@ -32,9 +32,7 @@ public class ProductoService {
         productoRepository.save(producto);
     }
 
-    public void delete(int id){
-        productoRepository.deleteById(id);
-    }
+    public void delete(int id){ productoRepository.deleteById(id); }
 
     public boolean existsById(int id){
         return productoRepository.existsById(id);

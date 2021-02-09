@@ -12,6 +12,7 @@ import com.tutorial.crud.security.jwt.JwtProvider;
 import com.tutorial.crud.security.service.RolService;
 import com.tutorial.crud.security.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +33,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin
+@CrossOrigin(origins = {"https://asadero-front-end-dev.herokuapp.com","192.168.100.20:4200"})
 public class AuthController {
 
     @Autowired
@@ -53,12 +54,19 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listaUsu")
     public ResponseEntity<List<Usuario>> list() {
+        try{
         List<Usuario> list = usuarioService.listar();
         return new ResponseEntity(list, HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/nuevo")
     public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult) {
+        try{
         if (bindingResult.hasErrors())
             return new ResponseEntity(new Mensaje("campos mal puestos o email inválido"), HttpStatus.BAD_REQUEST);
         if (usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario()))
@@ -75,10 +83,16 @@ public class AuthController {
         usuario.setRoles(roles);
         usuarioService.save(usuario);
         return new ResponseEntity(new Mensaje("usuario guardado"), HttpStatus.CREATED);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult) {
+        try{
         if (bindingResult.hasErrors())
             return new ResponseEntity(new Mensaje("campos mal puestos"), HttpStatus.BAD_REQUEST);
         Authentication authentication =
@@ -88,32 +102,58 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
         return new ResponseEntity(jwtDto, HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteuser/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
+        try{
         if (!usuarioService.existeUser(id))
             return new ResponseEntity(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
         usuarioService.eliminarUser(id);
         return new ResponseEntity(new Mensaje("Usuario eliminado"), HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleterol/{codigo}")
     public ResponseEntity<?> deleteRol(@PathVariable("codigo") int codigo) {
+        try{
         if (!rolService.existeRol(codigo))
             return new ResponseEntity(new Mensaje("no existe rol"), HttpStatus.NOT_FOUND);
         rolService.eliminarRol(codigo);
         return new ResponseEntity(new Mensaje("Rol eliminado"), HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/createrol")
     public ResponseEntity<?> CrearRol(){
-     Rol rolAdmin = new Rol(RolNombre.ROLE_ADMIN);
-     Rol rolUser = new Rol(RolNombre.ROLE_USER);
-     rolService.saveRol(rolAdmin);
-     rolService.saveRol(rolUser);
-     return new ResponseEntity(new Mensaje("Roles creados"),HttpStatus.OK);
+        try{
+             Rol rolAdmin = new Rol(RolNombre.ROLE_ADMIN);
+             Rol rolUser = new Rol(RolNombre.ROLE_USER);
+             if(rolService.getByRolNombre(rolAdmin.getRolNombre()) != null &&
+                     rolService.getByRolNombre(rolAdmin.getRolNombre()) != null) {
+                rolService.saveRol(rolAdmin);
+                rolService.saveRol(rolUser);
+            }
+            return new ResponseEntity(new Mensaje("Roles creados"),HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

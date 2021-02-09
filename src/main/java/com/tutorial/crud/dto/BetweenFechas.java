@@ -1,24 +1,21 @@
 package com.tutorial.crud.dto;
 
-import java.util.Calendar;
 import java.sql.Date;
 
 public class BetweenFechas {
 
     String usuario;
-    String tiempoF;
-    String tiempoS;
     Date fechaFirst;
     Date fechaSecond;
+    String dia;
 
     public BetweenFechas(){}
 
-    public BetweenFechas(String usuario, String tiempoF, String tiempoS, Date fechaFirst, Date fechaSecond) {
+    public BetweenFechas(String usuario, Date fechaFirst, Date fechaSecond, String dia) {
         this.usuario = usuario;
-        this.tiempoF = tiempoF;
-        this.tiempoS = tiempoS;
         this.fechaFirst = fechaFirst;
         this.fechaSecond = fechaSecond;
+        this.dia = dia;
     }
 
     public String getUsuario() {
@@ -27,22 +24,6 @@ public class BetweenFechas {
 
     public void setUsuario(String usuario) {
         this.usuario = usuario;
-    }
-
-    public String getTiempoF() {
-        return tiempoF;
-    }
-
-    public void setTiempoF(String tiempoF) {
-        this.tiempoF = tiempoF;
-    }
-
-    public String getTiempoS() {
-        return tiempoS;
-    }
-
-    public void setTiempoS(String tiempoS) {
-        this.tiempoS = tiempoS;
     }
 
     public Date getFechaFirst() {
@@ -59,5 +40,13 @@ public class BetweenFechas {
 
     public void setFechaSecond(Date fechaSecond) {
         this.fechaSecond = fechaSecond;
+    }
+
+    public String getDia() {
+        return dia;
+    }
+
+    public void setDia(String dia) {
+        this.dia = dia;
     }
 }

@@ -11,6 +11,7 @@ import com.tutorial.crud.service.diaPolloService;
 import com.tutorial.crud.service.inventarioService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/inventario")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"https://asadero-front-end-dev.herokuapp.com","192.168.100.20:4200"})
 public class inventarioController {
 
     @Autowired
@@ -34,14 +35,21 @@ public class inventarioController {
 
     @GetMapping("/lista")
     public ResponseEntity<ArrayList<inventario>> list(){
+        try{
         List<inventario> list = inventarioservice.listar();
         return new ResponseEntity(list, HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addInventario")
     public ResponseEntity<?> create(@RequestBody inventarioDto invenDto){
+        try{
         if(invenDto.getCantidad()<0)
             return new ResponseEntity(new Mensaje("cantidad debe ser mayor a 0"), HttpStatus.BAD_REQUEST);
         if(StringUtils.isBlank(invenDto.getProductoId().getNombre()))
@@ -55,11 +63,17 @@ public class inventarioController {
                     invenDto.getCantidad(),invenDto.getCantidad());
             inventarioservice.save(inven);
         return new ResponseEntity(new Mensaje("Ingreso Exitoso"), HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/updateinventario/{idIven}")
     public ResponseEntity<?> Update(@PathVariable("idIven")int id,@RequestBody inventarioDto invenDto){
+        try{
         if(invenDto.getCantidad()<0)
             return new ResponseEntity(new Mensaje("cantidad debe ser mayor a 0"), HttpStatus.BAD_REQUEST);
 
@@ -70,24 +84,35 @@ public class inventarioController {
         inven.setExtras(invenDto.getExtras());
         inventarioservice.save(inven);
         return new ResponseEntity(new Mensaje("Actualizacion Exitosa"), HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")int id){
+        try{
         if(!inventarioservice.existsById(id))
             return new ResponseEntity(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
         inventarioservice.delete(id);
         return new ResponseEntity(new Mensaje("producto e inventario eliminado"), HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/updatepollo/{id}")
-    public ResponseEntity<?> updatepollo(@PathVariable("id")int id,
-                                         @RequestBody actualizarPollo update)
+    public ResponseEntity<?> updatepollo(@PathVariable("id")int id, @RequestBody actualizarPollo update)
     {
+        try{
         int valor=0,presa=0;
         if(!inventarioservice.existsById(id))
             return new ResponseEntity(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
@@ -105,11 +130,17 @@ public class inventarioController {
         inventa.setCantidadExist(valor);
         inventarioservice.save(inventa);
         return new ResponseEntity(new Mensaje("Pollo actualizado"), HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/pollotable")
     public ResponseEntity<?> PolloTable(@RequestBody actualizarPollo update)
     {
+        try{
         if(update.getPollo()<0)
             return new ResponseEntity(new Mensaje("Debe ser mayor a 0"),HttpStatus.BAD_REQUEST);
         diaPollos dia;
@@ -123,13 +154,24 @@ public class inventarioController {
         dia.setPresa(update.getPresa());
         diaservice.Guardar(dia);
         return new ResponseEntity(new Mensaje("Actualizacion exitosa"),HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/pollopresa")
     public ResponseEntity<actualizarPollo> lista()
     {
+        try{
         diaPollos dia=diaservice.Listar(1);
         actualizarPollo ac=new actualizarPollo(dia.getPollo(), dia.getPresa());
         return new ResponseEntity(ac,HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

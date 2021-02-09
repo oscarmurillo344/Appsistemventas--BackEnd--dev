@@ -9,6 +9,7 @@ import com.tutorial.crud.entity.inventario;
 import com.tutorial.crud.service.FacturaService;
 import com.tutorial.crud.service.inventarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/factura")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"https://asadero-front-end-dev.herokuapp.com","192.168.100.20:4200"})
 public class FacturaController {
 
     @Autowired
@@ -31,25 +32,37 @@ public class FacturaController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/lista/{numero}")
     public ResponseEntity<List<facturacion>> list(@PathVariable("numero") int numero){
-        if (!facturaservice.existsByNumero(numero))
-            return new ResponseEntity(new Mensaje("transacción no existente"), HttpStatus.OK);
-        List<facturacion> list = facturaservice.listaNumero(numero);
-        return new ResponseEntity(list, HttpStatus.OK);
+        try{
+            if (!facturaservice.existsByNumero(numero))
+                return new ResponseEntity(new Mensaje("transacción no existente"), HttpStatus.NOT_FOUND);
+            List<facturacion> list = facturaservice.listaNumero(numero);
+            return new ResponseEntity(list, HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")int id){
+        try{
         if(!facturaservice.existsByNumero(id))
             return new ResponseEntity(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
         facturaservice.eliminarFact(id);
         return new ResponseEntity(new Mensaje("factura eliminada"), HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/facturar")
     public ResponseEntity<?> create(@RequestBody facturaDto factDto){
         int count=0,count2=0;
-
+    try{
         if(factDto.getCantidad()<0)
             return new ResponseEntity(new Mensaje("cantidad debe ser mayor a 0"), HttpStatus.BAD_REQUEST);
 
@@ -64,67 +77,117 @@ public class FacturaController {
         inventarioservice.save(inventory);
 
         if(factDto.getExtras() != ""){
-            String[] lista=factDto.getExtras().split(",");
-            for (int i=0;i < lista.length ;i++){
-                inventario invent=inventarioservice.getOne(Integer.parseInt(lista[i])).get();
+            String[] list=factDto.getExtras().split(",");
+            for (int i=0;i < list.length ;i++){
+                inventario invent=inventarioservice.getOne(Integer.parseInt(list[i])).get();
                 count2=invent.getCantidadExist()- factDto.getCantidad();
                 invent.setCantidadExist(count2);
                 inventarioservice.save(invent);
             }
         }
         return new ResponseEntity(new Mensaje("Venta Exitosa"), HttpStatus.OK);
+    }catch (DataAccessException ex){
+        return new ResponseEntity(new Mensaje
+                ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     }
 
 
     @GetMapping("/numero")
     public ResponseEntity<Integer> Numerofactura(){
+        try{
         Integer listaN=facturaservice.MaximoValor();
         return new ResponseEntity(listaN, HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/totalDay/{usu}")
     public ResponseEntity<List<VentasDay>> Totalday(@PathVariable("usu") String usu){
+        try{
         List<VentasDay> l=facturaservice.TotalDia(usu);
         return new ResponseEntity(l, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/totalfechaUser")
-    public ResponseEntity<List<VentasDay>> totalFechaUser(@RequestBody BetweenFechas fec){
-        if(fec.getFechaFirst() == null )
-            return new ResponseEntity(new Mensaje("No existe fecha"),HttpStatus.BAD_REQUEST);
-        if(fec.getUsuario().isEmpty())
-            return new ResponseEntity(new Mensaje("No existe usuario"),HttpStatus.BAD_REQUEST);
-
-        List<VentasDay> listar=facturaservice.TotalFechasUser
-                (fec.getUsuario(),fec.getFechaFirst(),fec.getFechaSecond());
-        return new ResponseEntity(listar,HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/totalfechaHour")
-    public ResponseEntity<List<VentasDay>> totalFechaHoras(@RequestBody BetweenFechas fec){
-        if(fec.getFechaFirst() == null )
-            return new ResponseEntity(new Mensaje("No existe fecha"),HttpStatus.BAD_REQUEST);
-        if(fec.getUsuario().isEmpty())
-            return new ResponseEntity(new Mensaje("No existe usuario"),HttpStatus.BAD_REQUEST);
-        List<VentasDay> listar=facturaservice.TotalFechasHour
-        (fec.getUsuario(),fec.getTiempoF(),fec.getTiempoS(),fec.getFechaFirst(),fec.getFechaSecond());
-        return new ResponseEntity(listar,HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/totalfecha")
     public ResponseEntity<List<VentasDay>> totalFecha(@RequestBody BetweenFechas fec)
     {
+        try{
         if(fec.getFechaFirst() == null )
             return new ResponseEntity(new Mensaje("No existe fecha"),HttpStatus.BAD_REQUEST);
 
         List<VentasDay> listar=facturaservice.TotalFechas(fec.getFechaFirst(),fec.getFechaSecond());
         return new ResponseEntity(listar,HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/totalfechaUser")
+    public ResponseEntity<List<VentasDay>> totalFechaUser(@RequestBody BetweenFechas fec){
+        try{
+        if(fec.getFechaFirst() == null )
+            return new ResponseEntity(new Mensaje("No existe fecha"),HttpStatus.BAD_REQUEST);
+        if(fec.getUsuario().isEmpty())
+            return new ResponseEntity(new Mensaje("No existe usuario"),HttpStatus.BAD_REQUEST);
 
+        List<VentasDay> lis=facturaservice.TotalFechasUser
+                (fec.getUsuario(),fec.getFechaFirst(),fec.getFechaSecond());
+        return new ResponseEntity(lis,HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/totalfechauserdia")
+    public ResponseEntity<List<VentasDay>> totalFechaUserDia(@RequestBody BetweenFechas fec){
+        try{
+        if(fec.getFechaFirst() == null )
+            return new ResponseEntity(new Mensaje("No existe fecha"),HttpStatus.BAD_REQUEST);
+        if(fec.getUsuario().isEmpty())
+            return new ResponseEntity(new Mensaje("No existe usuario"),HttpStatus.BAD_REQUEST);
+        List<VentasDay> listar=facturaservice.TotalFechasDia
+        (fec.getFechaFirst(),fec.getFechaSecond(),fec.getDia());
+        return new ResponseEntity(listar,HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+        @PostMapping("/totalfechadia")
+    public ResponseEntity<List<VentasDay>> totalFechaDia(@RequestBody BetweenFechas fec){
+        try{
+        if(fec.getFechaFirst() == null )
+            return new ResponseEntity(new Mensaje("No existe fecha"),HttpStatus.BAD_REQUEST);
+        if(fec.getUsuario().isEmpty())
+            return new ResponseEntity(new Mensaje("No existe usuario"),HttpStatus.BAD_REQUEST);
+        List<VentasDay> listar=facturaservice.TotalFechasDia
+                (fec.getFechaFirst(),fec.getFechaSecond(),fec.getDia());
+        return new ResponseEntity(listar,HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -34,7 +34,7 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
             "f.Datenow between :dateFirst and :dateSecond " +
             " group by f.usuario,pr.nombre,pr.precio " +
             " order by pr.nombre;",nativeQuery = true)
-    List<VentasDay> TotalFechas(@Param("user") String usuario,
+    List<VentasDay> TotalUserFechas(@Param("user") String usuario,
                                 @Param("dateFirst") Date dateF,
                                 @Param("dateSecond") Date dateS);
 
@@ -49,15 +49,23 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
 
     @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
             "FROM facturacion f, rel_fact_product pf, producto pr " +
-            " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.usuario= :user and f.tiempoactual between :timeF and :timeS and" +
+            " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.usuario= :user and f.dia in :dia" +
             "f.Datenow between :dateFirst and :dateSecond " +
             " group by f.usuario,pr.nombre,pr.precio " +
             " order by pr.nombre;",nativeQuery = true)
-    List<VentasDay> TotalFechasHoras(@Param("user") String usuario,
-                                     @Param("timeF") String tiempoF,
-                                    @Param("timeS") String tiempoS,
+    List<VentasDay> TotalUserFechasdia(@Param("user") String usuario,
                                     @Param("dateFirst") Date dateF,
-                                    @Param("dateSecond") Date dateS);
+                                    @Param("dateSecond") Date dateS,
+                                   @Param("dia") String dia);
+    @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
+            "FROM facturacion f, rel_fact_product pf, producto pr " +
+            " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.dia in (:dia)" +
+            "f.Datenow between :dateFirst and :dateSecond " +
+            " group by f.usuario,pr.nombre,pr.precio " +
+            " order by pr.nombre;",nativeQuery = true)
+    List<VentasDay> TotalFechasdia(@Param("dateFirst") Date dateF,
+                                       @Param("dateSecond") Date dateS,
+                                       @Param("dia") String dia);
 
     List<facturacion> findByNumeroFact(int id);
 

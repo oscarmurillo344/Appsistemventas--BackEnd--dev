@@ -60,13 +60,15 @@ public class FacturaService {
     public List<VentasDay> TotalDia(String usuario){ return facturarepository.TotalDay(usuario);}
 
     public List<VentasDay> TotalFechasUser(String usua, Date dateF, Date dateS)
-    { return facturarepository.TotalFechas(usua,dateF,dateS);}
+    { return facturarepository.TotalUserFechas(usua,dateF,dateS);}
 
     public List<VentasDay> TotalFechas(Date dateF, Date dateS)
     { return facturarepository.TotalFechas(dateF,dateS);}
 
-    public List<VentasDay> TotalFechasHour(String usua,String tiempoF,String tiempoS ,Date dateF, Date dateS)
-    { return facturarepository.TotalFechasHoras(usua,tiempoF,tiempoS,dateF,dateS);}
+    public List<VentasDay> TotalFechasUserDia(String usua,Date dateF, Date dateS,String dia)
+    { return facturarepository.TotalUserFechasdia(usua,dateF,dateS,dia);}
+    public List<VentasDay> TotalFechasDia(Date dateF, Date dateS,String dia)
+    { return facturarepository.TotalFechasdia(dateF,dateS,dia);}
 
     public List<facturacion> listaNumero(int id){return facturarepository.findByNumeroFact(id);}
 
