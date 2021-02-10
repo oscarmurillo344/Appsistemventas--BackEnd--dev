@@ -49,7 +49,7 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
 
     @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
             "FROM facturacion f, rel_fact_product pf, producto pr " +
-            " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.usuario= :user and f.dia=:dia" +
+            " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.usuario= :user and f.dia=:dia and" +
             "f.Datenow between :dateFirst and :dateSecond " +
             " group by f.usuario,pr.nombre,pr.precio " +
             " order by pr.nombre;",nativeQuery = true)
@@ -59,7 +59,7 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
                                    @Param("dia") String dia);
     @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
             "FROM facturacion f, rel_fact_product pf, producto pr " +
-            " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.dia in (:dia)" +
+            " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.dia=:dia and" +
             "f.Datenow between :dateFirst and :dateSecond " +
             " group by f.usuario,pr.nombre,pr.precio " +
             " order by pr.nombre;",nativeQuery = true)
