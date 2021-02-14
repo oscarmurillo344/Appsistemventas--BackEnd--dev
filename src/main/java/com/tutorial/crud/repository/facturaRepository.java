@@ -40,7 +40,7 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
 
     @Query(value = "SELECT pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
             "FROM facturacion f, rel_fact_product pf, producto pr " +
-            " where pf.fk_product=pr.id and pf.fk_fact=f.id and" +
+            " where pf.fk_product=pr.id and pf.fk_fact=f.id and " +
             " f.Datenow between :dateFirst and  :dateSecond " +
             " group by pr.nombre,pr.precio" +
             " order by pr.nombre;",nativeQuery = true)
