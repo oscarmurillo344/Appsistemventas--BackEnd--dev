@@ -67,7 +67,7 @@ public class FacturaController {
             return new ResponseEntity(new Mensaje("cantidad debe ser mayor a 0"), HttpStatus.BAD_REQUEST);
 
         facturacion fact = new facturacion(factDto.getNumeroFact(), factDto.getUsuarioId()
-                , factDto.getDatenow(),facturaservice.convertir(),factDto.getDia()
+                , factDto.getDatenow(),factDto.getDatenow(),factDto.getDia()
                 ,factDto.getProductoId(),factDto.getCantidad());
         facturaservice.save(fact);
 
