@@ -21,8 +21,6 @@ public class FacturaService {
 
     @Autowired
     facturaRepository facturarepository;
-    SimpleDateFormat formatoDeFecha= new SimpleDateFormat("HH:mm:ss");
-
 
     public void save (facturacion fact){  facturarepository.save(fact);}
 
@@ -37,15 +35,7 @@ public class FacturaService {
     public boolean existsByNumero(int id){
         return facturarepository.existsByNumeroFact(id);
     }
-    public Date convertirTimezone(Date fecha){
-        try{
-            formatoDeFecha.setTimeZone(TimeZone.getTimeZone("America/Guayaquil"));
-            return formatoDeFecha.parse(fecha.toString());
-        }catch (ParseException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
+
     public List<facturacion> list(){
         return facturarepository.findAll();
     }
