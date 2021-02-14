@@ -71,6 +71,7 @@ public class FacturaController {
                 , factDto.getDatenow(),factDto.getDatenow(),factDto.getDia()
                 ,factDto.getProductoId(),factDto.getCantidad());
         System.out.println("fecha: "+new Date().toString());
+        System.out.println("fecha: "+factDto.getDatenow()+" dia: "+factDto.getDia());
         facturaservice.save(fact);
 
         inventario inventory=inventarioservice.ActulizarProduct(factDto.getProductoId());
