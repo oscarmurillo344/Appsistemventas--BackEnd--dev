@@ -21,6 +21,7 @@ public class FacturaService {
 
     @Autowired
     facturaRepository facturarepository;
+    SimpleDateFormat formatoDeFecha;
 
     public void save (facturacion fact){  facturarepository.save(fact);}
 
@@ -35,7 +36,18 @@ public class FacturaService {
     public boolean existsByNumero(int id){
         return facturarepository.existsByNumeroFact(id);
     }
-
+    public Date convertirTimezone(){
+        try{
+            this.formatoDeFecha= new SimpleDateFormat("HH:mm:ss");
+            TimeZone tz = TimeZone.getTimeZone("GMT-05:00");
+            Calendar c = Calendar.getInstance(tz);
+            String time = String.format("%02d" , c.get(Calendar.HOUR_OF_DAY))+":"+String.format("%02d" , c.get(Calendar.MINUTE))+":"+ String.format("%02d" , c.get(Calendar.SECOND));
+            return formatoDeFecha.parse(time);
+        }catch (ParseException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
     public List<facturacion> list(){
         return facturarepository.findAll();
     }

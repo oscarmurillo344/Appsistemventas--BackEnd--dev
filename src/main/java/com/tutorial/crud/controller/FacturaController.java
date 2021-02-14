@@ -68,10 +68,11 @@ public class FacturaController {
             return new ResponseEntity(new Mensaje("cantidad debe ser mayor a 0"), HttpStatus.BAD_REQUEST);
 
         facturacion fact = new facturacion(factDto.getNumeroFact(), factDto.getUsuarioId()
-                , factDto.getDatenow(),factDto.getDatenow(),factDto.getDia()
+                , facturaservice.convertirTimezone(),facturaservice.convertirTimezone(),
+                factDto.getDia()
                 ,factDto.getProductoId(),factDto.getCantidad());
         System.out.println("fecha: "+new Date().toString());
-        System.out.println("fecha: "+factDto.getDatenow()+" dia: "+factDto.getDia());
+        System.out.println("fecha: "+facturaservice.convertirTimezone());
         facturaservice.save(fact);
 
         inventario inventory=inventarioservice.ActulizarProduct(factDto.getProductoId());
