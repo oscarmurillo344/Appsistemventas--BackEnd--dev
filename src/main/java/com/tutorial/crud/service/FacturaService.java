@@ -54,7 +54,7 @@ public class FacturaService {
     public List<VentasDay> TotalFechas(Date dateF, Date dateS)
     { return facturarepository.TotalFechas(dateF,dateS);}
 
-    public List<VentasDay> TotalFechasUserDia(String usua,Date dateF, Date dateS,String dia)
+    public List<VentasDay> TotalUserFechasdia(String usua,Date dateF, Date dateS,String dia)
     { return facturarepository.TotalUserFechasdia(usua,dateF,dateS,dia);}
     public List<VentasDay> TotalFechasDia(Date dateF, Date dateS,String dia)
     { return facturarepository.TotalFechasdia(dateF,dateS,dia);}
