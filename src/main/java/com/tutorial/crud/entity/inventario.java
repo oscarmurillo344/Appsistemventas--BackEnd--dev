@@ -16,7 +16,6 @@ public class inventario {
     private int id;
 
     @NotNull
-    @JsonFormat(timezone = "America/Guayaquil",locale = "es_EC")
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar fecha;
 

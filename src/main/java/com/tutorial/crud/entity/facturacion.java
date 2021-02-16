@@ -19,12 +19,10 @@ public class facturacion {
     private String usuario;
 
     @NotNull
-    @JsonFormat(timezone = "America/Guayaquil",locale = "es_EC")
     @Temporal(TemporalType.DATE)
     private Date datenow;
 
     @NotNull
-    @JsonFormat(timezone = "America/Guayaquil",locale = "es_EC")
     @Temporal(TemporalType.TIME)
     private Date tiempoactual;
 

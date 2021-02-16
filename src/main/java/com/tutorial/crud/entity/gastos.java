@@ -21,7 +21,6 @@ public class gastos {
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(timezone = "America/Guayaquil",locale = "es_EC")
     private Calendar fecha;
     @NotNull
     private float valor;
