@@ -56,15 +56,7 @@ public class FacturaService {
 
     public List<VentasDay> TotalFechasUser(String usua, Date dateF, Date dateS)
     { return facturarepository.TotalUserFechas(usua,dateF,dateS);}
-    public Date convertir(Date fecha){
-        try{
-            dateformat.setTimeZone(TimeZone.getTimeZone("GMT-5"));
-            return dateformat.parse(dateformat.format(fecha));
-        }catch (ParseException ex){
-            System.out.println(ex.getMessage());
-        }
-        return null;
-    }
+
     public List<VentasDay> TotalFechas(Date dateF, Date dateS)
     { return facturarepository.TotalFechas(dateF,dateS);}
 
