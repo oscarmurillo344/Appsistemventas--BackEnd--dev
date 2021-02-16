@@ -8,6 +8,7 @@ import com.tutorial.crud.entity.facturacion;
 import com.tutorial.crud.entity.inventario;
 import com.tutorial.crud.service.FacturaService;
 import com.tutorial.crud.service.inventarioService;
+import javafx.scene.input.DataFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -16,9 +17,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/factura")
@@ -29,6 +31,8 @@ public class FacturaController {
     FacturaService facturaservice;
     @Autowired
     inventarioService inventarioservice;
+
+    SimpleDateFormat dateformat = new SimpleDateFormat("mm-dd-yyyy");
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/lista/{numero}")
@@ -147,13 +151,18 @@ public class FacturaController {
             return new ResponseEntity(new Mensaje("No existe fecha"),HttpStatus.BAD_REQUEST);
         if(fec.getUsuario().isEmpty())
             return new ResponseEntity(new Mensaje("No existe usuario"),HttpStatus.BAD_REQUEST);
-
-        List<VentasDay> lis=facturaservice.TotalFechasUser
-                (fec.getUsuario(),fec.getFechaFirst(),fec.getFechaSecond());
+            dateformat.setTimeZone(TimeZone.getTimeZone("America/Guayaquil"));
+            System.out.println("fecha: "+dateformat.format(fec.getFechaFirst())+" second: "+dateformat.format(fec.getFechaSecond()));
+            List<VentasDay> lis=facturaservice.TotalFechasUser
+                (fec.getUsuario(),dateformat.parse(dateformat.format(fec.getFechaFirst())),
+                        dateformat.parse(dateformat.format(fec.getFechaSecond())));
         return new ResponseEntity(lis,HttpStatus.OK);
         }catch (DataAccessException ex){
             return new ResponseEntity(new Mensaje
                     ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (ParseException ex){
+            return new ResponseEntity(new Mensaje("Error: ".concat(ex.getMessage())),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
