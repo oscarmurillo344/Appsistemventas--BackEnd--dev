@@ -68,8 +68,8 @@ public class FacturaController {
                 ,factDto.getDatenow(),factDto.getDatenow(),
                 factDto.getDia()
                 ,factDto.getProductoId(),factDto.getCantidad());
-        System.out.println("fecha servidor: "+factDto.getDatenow());
         System.out.println("fecha web: "+factDto.getDatenow());
+        System.out.println("fecha servidor: "+new Date().toString());
         facturaservice.save(fact);
         inventario inventory=inventarioservice.ActulizarProduct(factDto.getProductoId());
         count=inventory.getCantidadExist()- factDto.getCantidad();
