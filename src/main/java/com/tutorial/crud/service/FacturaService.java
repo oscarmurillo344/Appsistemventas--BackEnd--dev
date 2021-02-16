@@ -1,12 +1,16 @@
 package com.tutorial.crud.service;
 
+import com.tutorial.crud.dto.Mensaje;
 import com.tutorial.crud.dto.VentasDay;
 import com.tutorial.crud.entity.facturacion;
 import com.tutorial.crud.repository.facturaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,6 +25,8 @@ public class FacturaService {
 
     @Autowired
     facturaRepository facturarepository;
+
+    SimpleDateFormat dateformat = new SimpleDateFormat("MM-dd-yyyy");
 
     public void save (facturacion fact){  facturarepository.save(fact);}
 
@@ -50,7 +56,15 @@ public class FacturaService {
 
     public List<VentasDay> TotalFechasUser(String usua, Date dateF, Date dateS)
     { return facturarepository.TotalUserFechas(usua,dateF,dateS);}
-
+    public Date convertir(Date fecha){
+        try{
+            dateformat.setTimeZone(TimeZone.getTimeZone("America/Guayaquil"));
+            return dateformat.parse(dateformat.format(fecha));
+        }catch (ParseException ex){
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
     public List<VentasDay> TotalFechas(Date dateF, Date dateS)
     { return facturarepository.TotalFechas(dateF,dateS);}
 
