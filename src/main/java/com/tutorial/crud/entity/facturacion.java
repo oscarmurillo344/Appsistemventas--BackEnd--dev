@@ -1,5 +1,6 @@
 package com.tutorial.crud.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tutorial.crud.security.entity.Usuario;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class facturacion {
     private Date datenow;
 
     @NotNull
+    @JsonFormat(timezone = "America/Guayaquil")
     @Temporal(TemporalType.TIME)
     private Date tiempoactual;
 

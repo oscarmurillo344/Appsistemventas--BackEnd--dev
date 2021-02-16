@@ -1,6 +1,7 @@
 package com.tutorial.crud.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -9,9 +10,15 @@ public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotNull
+    @Column(unique = true,length = 30)
     private String nombre;
+    @NotNull
     private String tipo;
+    @NotNull
     private float precio;
+    @NotNull
     private int presa;
 
 

@@ -1,5 +1,7 @@
 package com.tutorial.crud.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
@@ -18,6 +20,7 @@ public class gastos {
     private String usuario;
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(timezone = "America/Guayaquil")
     private Calendar fecha;
     @NotNull
     private float valor;

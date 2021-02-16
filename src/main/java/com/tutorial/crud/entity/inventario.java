@@ -1,6 +1,8 @@
 package com.tutorial.crud.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
@@ -14,6 +16,7 @@ public class inventario {
     private int id;
 
     @NotNull
+    @JsonFormat(timezone = "America/Guayaquil")
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar fecha;
 
