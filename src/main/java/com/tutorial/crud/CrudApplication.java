@@ -8,8 +8,7 @@ import java.util.TimeZone;
 @SpringBootApplication
 public class CrudApplication {
 	@PostConstruct
-	public void init(){ TimeZone.setDefault(TimeZone.getTimeZone("UTC+5"));
-		System.out.println(TimeZone.getDefault()); }
+	public void init(){ TimeZone.setDefault(TimeZone.getTimeZone("America/Guayaquil"));}
 	public static void main(String[] args) {
 		SpringApplication.run(CrudApplication.class, args);
 	}
