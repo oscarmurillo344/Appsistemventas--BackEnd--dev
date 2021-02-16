@@ -26,7 +26,7 @@ public class FacturaService {
     @Autowired
     facturaRepository facturarepository;
 
-    SimpleDateFormat dateformat = new SimpleDateFormat("MM-dd-yyyy");
+    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public void save (facturacion fact){  facturarepository.save(fact);}
 
