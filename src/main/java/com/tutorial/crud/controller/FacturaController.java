@@ -8,16 +8,12 @@ import com.tutorial.crud.entity.facturacion;
 import com.tutorial.crud.entity.inventario;
 import com.tutorial.crud.service.FacturaService;
 import com.tutorial.crud.service.inventarioService;
-import javafx.scene.input.DataFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
