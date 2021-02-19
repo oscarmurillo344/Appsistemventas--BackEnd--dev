@@ -71,7 +71,7 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
             "FROM facturacion f, rel_fact_product pf, producto pr " +
             " where pf.fk_product=pr.id and pf.fk_fact=f.id  and " +
             "f.Datenow between :dateFirst and :dateSecond " +
-            " group by f.usuario,pr.nombre,pr.precio " +
+            " group by f.usuario,pr.nombre,pr.precio,datenow,dia " +
             " order by pr.nombre;",nativeQuery = true)
     List<VentasDay> TotalFechasComplete(@Param("dateFirst") Date dateF,
                                         @Param("dateSecond") Date dateS);
