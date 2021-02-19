@@ -26,17 +26,9 @@ public class FacturaService {
     @Autowired
     facturaRepository facturarepository;
 
-    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public void save (facturacion fact){  facturarepository.save(fact);}
 
-    public void delete(int id){
-        facturarepository.deleteById(id);
-    }
-
-    public boolean existsById(int id){
-        return facturarepository.existsById(id);
-    }
 
     public boolean existsByNumero(int id){
         return facturarepository.existsByNumeroFact(id);
@@ -44,10 +36,6 @@ public class FacturaService {
 
     public List<facturacion> list(){
         return facturarepository.findAll();
-    }
-
-    public Optional<facturacion> getOne(int id){
-        return facturarepository.findById(id);
     }
 
     public Integer MaximoValor(){ return facturarepository.FacturaMaxima(); }
@@ -62,8 +50,12 @@ public class FacturaService {
 
     public List<VentasDay> TotalUserFechasdia(String usua,Date dateF, Date dateS,String dia)
     { return facturarepository.TotalUserFechasdia(usua,dateF,dateS,dia);}
+
     public List<VentasDay> TotalFechasDia(Date dateF, Date dateS,String dia)
     { return facturarepository.TotalFechasdia(dateF,dateS,dia);}
+
+    public List<VentasDay> TotalFechasComplete(Date dateF, Date dateS)
+    { return facturarepository.TotalFechasComplete(dateF,dateS);}
 
     public List<facturacion> listaNumero(int id){return facturarepository.findByNumeroFact(id);}
 

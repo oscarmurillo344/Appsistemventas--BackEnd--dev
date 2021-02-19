@@ -68,8 +68,8 @@ public class FacturaController {
                 ,factDto.getDatenow(),factDto.getDatenow(),
                 factDto.getDia()
                 ,factDto.getProductoId(),factDto.getCantidad());
-        System.out.println("fecha web: "+factDto.getDatenow());
-        System.out.println("fecha servidor: "+new Date().toString());
+      //  System.out.println("fecha web: "+factDto.getDatenow());
+      //  System.out.println("fecha servidor: "+new Date().toString());
         facturaservice.save(fact);
         inventario inventory=inventarioservice.ActulizarProduct(factDto.getProductoId());
         count=inventory.getCantidadExist()- factDto.getCantidad();
@@ -187,6 +187,22 @@ public class FacturaController {
         }catch (DataAccessException ex){
             return new ResponseEntity(new Mensaje
                     ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/totalfechasComp")
+    public ResponseEntity<List<VentasDay>> totalFechaComp(@RequestBody BetweenFechas fec) {
+        try {
+            if (fec.getFechaFirst() == null || fec.getFechaSecond() == null)
+                return new ResponseEntity(new Mensaje("No existe fecha"), HttpStatus.BAD_REQUEST);
+            List<VentasDay> listar = facturaservice.TotalFechasComplete
+                    (fec.getFechaFirst(), fec.getFechaSecond());
+            return new ResponseEntity(listar, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", " + ex.getMostSpecificCause().getMessage())),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
