@@ -67,7 +67,7 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
                                        @Param("dateSecond") Date dateS,
                                        @Param("dia") String dia);
 
-    @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad ,datenow ,dia "+
+    @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad ,datenow as fecha ,dia "+
             "FROM facturacion f, rel_fact_product pf, producto pr " +
             " where pf.fk_product=pr.id and pf.fk_fact=f.id  and " +
             "f.Datenow between :dateFirst and :dateSecond " +

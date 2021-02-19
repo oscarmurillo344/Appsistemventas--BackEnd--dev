@@ -11,7 +11,7 @@ public interface VentasDay {
 
     String getFecha();
 
-    String getHora();
+    String getDia();
 
     int getCantidad();
 
