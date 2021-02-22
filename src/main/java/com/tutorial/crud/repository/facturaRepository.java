@@ -20,7 +20,7 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
             "     FROM facturacion", nativeQuery = true)
     Integer FacturaMaxima();
 
-    @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
+    @Query(value = "SELECT pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
             "FROM facturacion f, rel_fact_product pf, producto pr " +
             " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.usuario= :user " +
             " and extract(day from f.Datenow)=extract(day from current_date) " +
@@ -28,7 +28,7 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
             " order by pr.nombre;", nativeQuery = true)
     List<VentasDay> TotalDay(@Param("user") String usuario);
 
-    @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
+    @Query(value = "SELECT pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
             "FROM facturacion f, rel_fact_product pf, producto pr " +
             " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.usuario= :user and " +
             "f.Datenow between :dateFirst and :dateSecond " +
@@ -47,31 +47,31 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
     List<VentasDay> TotalFechas(@Param("dateFirst") Date dateF,
                                 @Param("dateSecond") Date dateS);
 
-    @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
+    @Query(value = "SELECT pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
             "FROM facturacion f, rel_fact_product pf, producto pr " +
             " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.usuario= :user and f.dia=:dia and " +
             "f.Datenow between :dateFirst and :dateSecond " +
-            " group by f.usuario,pr.nombre,pr.precio " +
+            " group by pr.nombre,pr.precio " +
             " order by pr.nombre;",nativeQuery = true)
     List<VentasDay> TotalUserFechasdia(@Param("user") String usuario,
                                     @Param("dateFirst") Date dateF,
                                     @Param("dateSecond") Date dateS,
                                    @Param("dia") String dia);
-    @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
+    @Query(value = "SELECT pr.nombre,pr.precio,sum(f.cantidad) as cantidad " +
             "FROM facturacion f, rel_fact_product pf, producto pr " +
             " where pf.fk_product=pr.id and pf.fk_fact=f.id and f.dia=:dia and " +
             "f.Datenow between :dateFirst and :dateSecond " +
-            " group by f.usuario,pr.nombre,pr.precio " +
+            " group by pr.nombre,pr.precio " +
             " order by pr.nombre;",nativeQuery = true)
     List<VentasDay> TotalFechasdia(@Param("dateFirst") Date dateF,
                                        @Param("dateSecond") Date dateS,
                                        @Param("dia") String dia);
 
-    @Query(value = "SELECT f.usuario,pr.nombre,pr.precio,sum(f.cantidad) as cantidad ,datenow as fecha ,dia "+
+    @Query(value = "SELECT pr.nombre,pr.precio,sum(f.cantidad) as cantidad ,datenow as fecha ,dia "+
             "FROM facturacion f, rel_fact_product pf, producto pr " +
             " where pf.fk_product=pr.id and pf.fk_fact=f.id  and " +
             "f.Datenow between :dateFirst and :dateSecond " +
-            " group by f.usuario,pr.nombre,pr.precio,datenow,dia " +
+            " group by pr.nombre,pr.precio,datenow,dia " +
             " order by pr.nombre;",nativeQuery = true)
     List<VentasDay> TotalFechasComplete(@Param("dateFirst") Date dateF,
                                         @Param("dateSecond") Date dateS);
