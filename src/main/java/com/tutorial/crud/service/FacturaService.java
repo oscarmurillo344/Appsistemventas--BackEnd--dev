@@ -59,6 +59,6 @@ public class FacturaService {
 
     public List<facturacion> listaNumero(int id){return facturarepository.findByNumeroFact(id);}
 
-    public long eliminarFact(int numero){return facturarepository.deleteByNumeroFact(numero);}
+    public List<facturacion> eliminarFact(int numero){return facturarepository.deleteByNumeroFact(numero);}
 
 }

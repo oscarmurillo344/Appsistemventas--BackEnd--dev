@@ -80,6 +80,6 @@ public interface facturaRepository extends JpaRepository<facturacion, Integer> {
 
     boolean existsByNumeroFact(int id);
 
-    long deleteByNumeroFact(int id);
+    List<facturacion> deleteByNumeroFact(int id);
 
 }
