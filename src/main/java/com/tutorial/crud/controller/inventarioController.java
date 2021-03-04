@@ -117,7 +117,7 @@ public class inventarioController {
         if(!inventarioservice.existsById(id))
             return new ResponseEntity(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
         if(!inventarioservice.getOne(id).get().getProductoId().getTipo().equals("mercaderia"))
-            return new ResponseEntity(new Mensaje("no es el tipo"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new Mensaje("no es el tipo"), HttpStatus.NOT_FOUND);
         inventario inventa=inventarioservice.getOne(id).get();
 
         valor=inventa.getCantidadExist()-update.getPollo();
@@ -141,7 +141,7 @@ public class inventarioController {
     public ResponseEntity<?> PolloTable(@RequestBody actualizarPollo update)
     {
         try{
-        if(update.getPollo()<0)
+        if(update.getPollo() < 0 && update.getPresa() < 0)
             return new ResponseEntity(new Mensaje("Debe ser mayor a 0"),HttpStatus.BAD_REQUEST);
         diaPollos dia;
         if(!diaservice.Existe(1)){
