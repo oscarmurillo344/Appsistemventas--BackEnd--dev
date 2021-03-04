@@ -50,20 +50,24 @@ public class FacturaController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")int id){
         try{
-            int presa=0;
+            int presa=0,cantidad=0,Totalpresa=0;
             if(!facturaservice.existsByNumero(id))
                 return new ResponseEntity(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
             List<facturacion> Lfacturas=facturaservice.eliminarFact(id);
-            for(facturacion factura : Lfacturas) presa+=factura.getProductoId().getPresa();
+            for(facturacion factura : Lfacturas){
+                presa+=factura.getProductoId().getPresa();
+                cantidad=factura.getCantidad();
+            }
+            Totalpresa=presa*cantidad;
             diaPollos listaPollo= diaservice.Listar(1);
-            System.out.println("valor: "+presa);
-            if(presa>=8){
-                while(presa>=8){
-                    presa-=8;
+            System.out.println("valor: "+Totalpresa);
+            if(Totalpresa>=8){
+                while(Totalpresa>=8){
+                    Totalpresa-=8;
                     listaPollo.setPollo(listaPollo.getPollo()+1);
-                    listaPollo.setPresa(listaPollo.getPresa()+presa);
                 }
-            }else listaPollo.setPresa(listaPollo.getPresa()+presa);
+                listaPollo.setPresa(listaPollo.getPresa()+Totalpresa);
+            }else listaPollo.setPresa(listaPollo.getPresa()+Totalpresa);
             diaservice.Guardar(listaPollo);
             return new ResponseEntity(new Mensaje("factura eliminada"), HttpStatus.OK);
         }catch (DataAccessException ex){
